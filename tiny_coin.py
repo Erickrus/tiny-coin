@@ -42,7 +42,7 @@ class TinyCoin:
 
     # 根据规则 发现节点
     def discover_peer_nodes(self):
-        Timeout().register(self.find_peer_nodes, 5).start()
+        Timeout().set(self.find_peer_nodes, 5).start()
     
     # Generate genesis block
     # 创建创世块genesis block
@@ -66,7 +66,6 @@ class TinyCoin:
             except:
                 pass
         self.peerNodes = result
-        print(self.peerNodes)
         
     def ping(self):
         return "OK"
@@ -75,7 +74,6 @@ class TinyCoin:
     def transaction(self):
         # On each new POST request, we extract the transaction data
         # 每次POST请求发生时, 得到有交易数据
-        print(request)
         newTransaction = request.get_json()
         
         # Then we add the transaction to our list
@@ -83,8 +81,6 @@ class TinyCoin:
         self.thisNodeTransactions.append(newTransaction)
         # Because the transaction was successfully submitted, we log it to our console
         # 因为交易被成功提交, 打印出来, 在console中进行记录
-        print(request)
-        print(newTransaction)
         print("New transaction")
         print("FROM: {}".format(newTransaction['from'].encode('ascii','replace')))
         print("TO: {}".format(newTransaction['to'].encode('ascii','replace')))
@@ -235,14 +231,17 @@ class TinyCoin:
 def homepage():
     return render_template("index.html")
 
-node.add_url_rule("/index.html", "index.html", homepage, methods=['GET'])
+def main():
+    node.add_url_rule("/index.html", "index.html", homepage, methods=['GET'])
+    
+    port = 80
+    if len(sys.argv) > 1:
+        port = int(sys.argv[1])
+    
+    tc = TinyCoin(port = port)
+    tc.register_service(node)
+    
+    node.run(host='0.0.0.0', port=port)
 
-
-port = 80
-if len(sys.argv) > 1:
-    port = int(sys.argv[1])
-
-tc = TinyCoin(port = port)
-tc.register_service(node)
-
-node.run(host='0.0.0.0', port=port)
+if __name__ == "__main__":
+    main()
