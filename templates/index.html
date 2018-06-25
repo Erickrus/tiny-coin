@@ -1,0 +1,26 @@
+<html>
+<head>
+<title>TinyCoin</title>
+<script src="{{ url_for('static', filename='js/jquery-3.3.1.js') }}"></script>
+<script src="{{ url_for('static', filename='js/TinyCoin.js') }}"></script>
+</head>
+<body>
+<H1>TinyCoin</H1>
+<hr/><br/>
+<input type=button value='Ping' onclick='javascript:onPingClick()' />
+<input type=button value='Blocks' onclick='javascript:onBlocksClick()' />
+<input type=button value='Mine' onclick='javascript:onMineClick()' />
+<input type=button value='Transaction' onclick='javascript:onTransactionClick()' />
+<input type=button value='Consensus' onclick='javascript:onConsensusClick()' /><br/>
+<br/>
+<input type=button value='Submit' onclick='javascript:onSubmitClick()' /><br/>
+Parameters: <br/>
+<div id='url' style="visibility: hidden" >/ping</div>
+<textarea id='textInput' style='width:600px;height:50px'></textarea> <br/>
+Output: <br/>
+<textarea id='textOutput' style='width:600px;height:150px'></textarea> <br/>
+<br/>
+<br/>
+Hu, Ying-Hao (<a href='mailto:hyinghao@hotmail.com'>hyinghao@hotmail.com</a>)
+</body>
+</html>
