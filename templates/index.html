@@ -4,8 +4,8 @@
 <script src="{{ url_for('static', filename='js/jquery-3.3.1.js') }}"></script>
 <script src="{{ url_for('static', filename='js/TinyCoin.js') }}"></script>
 <LINK href="{{ url_for('static', filename='css/TinyCoin.css') }}" rel="stylesheet" type="text/css" />
-
-
+<script>
+var minerAddress = '{{ minerAddress }}';</script>
 </head>
 <body>
 <H1>TinyCoin</H1>
@@ -14,10 +14,12 @@
 <input type=button value='Transaction' class='ActionButton' onclick='javascript:onTransactionClick()' />
 
 <input type=button value='Submit' class='SubmitButton' onclick='javascript:onSubmitClick()' /><br/>
+<div id='url' style="visibility: hidden" >/blocks</div>
+
 Parameters: <br/>
-<div id='url' style="visibility: hidden" >/ping</div>
-<textarea id='textInput' style='width:600px;height:50px'></textarea> <br/>
+<textarea id='textInput' style='width:600px;height:35px'></textarea> <br/>
 Output: <br/>
+<br/>
 <textarea id='textOutput' style='width:600px;height:150px'></textarea> <br/>
 <br/>
 <br/>

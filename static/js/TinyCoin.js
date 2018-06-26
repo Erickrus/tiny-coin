@@ -29,7 +29,7 @@ function onConsensusClick(){
 
 function onTransactionClick(){
 	$("#url").html("/txion");
-	document.getElementById('textInput').value = '{"from":"from-people", "to":"to-people", "amount":1}';
+	document.getElementById('textInput').value = '{"from":"'+minerAddress+'", "to":"'+minerAddress+'", "amount":1}';
 	$("#textOutput").html('');
 	method = "POST";
 }

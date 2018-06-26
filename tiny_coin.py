@@ -10,11 +10,12 @@ import datetime as date
 import copy
 import time
 import random
+import socket
 
 from block import Block
 from timeout import Timeout
 from logger import Logger
-from tiny_coin_backend import TinyCoinBackend
+from tiny_coin_polling import TinyCoinPolling
 
 node = Flask(__name__)
 
@@ -24,7 +25,9 @@ class TinyCoin:
         self.port = port
         # A completely random address of the owner of this node
         # 这是本节点所有者随机地址
-        self.minerAddress = "%s-%d" % ("localhost", self.port)
+        hostname = str(socket.gethostbyname(socket.gethostname()))
+        
+        self.minerAddress = "%s-%d" % (hostname, self.port)
 
         # This node's self.blockchain copy
         # 本节点的区块链拷贝
@@ -46,10 +49,8 @@ class TinyCoin:
         Logger.info("TinyCoin.mining: %s" % str(self.mining))
         
         #self.discover_peer_nodes()
-        self.backend = TinyCoinBackend()
-        self.backend.set(self)
-        self.backend.start()
-
+        # 执行后台线程
+        TinyCoinPolling().set(self).start()
     
     # Generate genesis block
     # 创建创世区块genesis block
@@ -75,11 +76,12 @@ class TinyCoin:
             except:
                 pass
         self.peerNodes = result
-        
+    
+    # 心跳函数
     def ping(self):
         return "OK"
         
-    # @node.route('/txion', methods=['POST'])
+    # 执行交易
     def transaction(self):
         Logger.info("TinyCoin.transaction() - %s" % self.minerAddress)
         # On each new POST request, we extract the transaction data
@@ -99,7 +101,7 @@ class TinyCoin:
         # 然后返回成功结果, 通知客户端提交成功
         return "Transaction submission successful\n"
     
-    # @node.route('/blocks', methods=['GET'])
+    # 查询当前所有区块
     def get_blocks(self):
         Logger.info("TinyCoin.get_blocks() - %s" % self.minerAddress)
         # 不能简单实用 = 否则会出错
@@ -122,7 +124,7 @@ class TinyCoin:
         chainToSend = json.dumps(chainToSend)
         return chainToSend
     
-    
+    # 寻找更新的链
     def _find_new_chains(self):
         # Get the blockchains of every other node
         # 获得本区块链上每个节点
@@ -139,7 +141,7 @@ class TinyCoin:
             otherChains.append(block)
         return otherChains
     
-    # 反序列化
+    # 反序列化区块链
     def _deserialize_blockchain(self):
         for i in range(len(self.blockchain)):
             block = self.blockchain[i]
@@ -223,7 +225,7 @@ class TinyCoin:
         lastBlock = self.blockchain[-1]
         if type(lastBlock) == type({}):
             lastProof = eval(lastBlock['data'])['proof-of-work']
-        else: 
+        else:
             lastProof = lastBlock.data['proof-of-work']
             
         # Find the proof of work for the current block being mined
@@ -232,7 +234,6 @@ class TinyCoin:
         proof = self.proof_of_work(lastProof)
 
         return self._keep_account(lastBlock, proof, self.minerAddress)
-        
         
     # 记账
     def _keep_account(self, lastBlock, proof, rewardTo):
@@ -342,11 +343,8 @@ class TinyCoin:
         
         # do not expose mine()
         #app.add_url_rule("/mine", "mine", self.mine, methods=['GET'])
-        
-    
-    
-def homepage():
-    return render_template("index.html")
+
+minerAddress = ""
 
 def main():
     node.add_url_rule("/index.html", "index.html", homepage, methods=['GET'])
@@ -362,7 +360,14 @@ def main():
     tc = TinyCoin(mining = mining, port = port)
     tc.register_service(node)
     
+    global minerAddress
+    minerAddress = tc.minerAddress
+    
     node.run(host='0.0.0.0', port=port)
+
+def homepage():
+    Logger.info("homepage() - %s" % minerAddress)
+    return render_template("index.html", minerAddress=minerAddress)
 
 if __name__ == "__main__":
     main()
