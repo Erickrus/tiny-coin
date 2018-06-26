@@ -1,42 +1,50 @@
 var method = "GET";
 function onBlocksClick(){
 	$("#url").html("/blocks");
-	$("#textInput").html('');
+	document.getElementById('textInput').value = '';
 	$("#textOutput").html('');
 	method = "GET";
 }
 
 function onPingClick(){
 	$("#url").html("/ping");
-	$("#textInput").html('');
+	document.getElementById('textInput').value = '';
 	$("#textOutput").html('');
 	method = "GET";
 }
 
 function onMineClick(){
 	$("#url").html("/mine");
-	$("#textInput").html('');
+	document.getElementById('textInput').value = '';
 	$("#textOutput").html('');
 	method = "GET";
 }
 
 function onConsensusClick(){
 	$("#url").html("/consensus");
-	$("#textInput").html('');
+	document.getElementById('textInput').value = '';
 	$("#textOutput").html('');
 	method = "GET";
 }
 
 function onTransactionClick(){
 	$("#url").html("/txion");
-	$("#textInput").html('{"from":"from_people", "to":"to_people", "amount":1}');
+	document.getElementById('textInput').value = '{"from":"from-people", "to":"to-people", "amount":1}';
+	$("#textOutput").html('');
+	method = "POST";
+}
+
+function onPowClick() {
+	$("#url").html("/pow");
+	document.getElementById('textInput').value = '{"proof-from":"", "last-proof":9}';
 	$("#textOutput").html('');
 	method = "POST";
 }
 
 function onSubmitClick(){
 	var url = $("#url").html();
-	var data = $("#textInput").html();
+	var data = document.getElementById('textInput').value;
+	console.log(data);
 
 	$.ajax({
 		  type: method,
@@ -46,5 +54,7 @@ function onSubmitClick(){
 		  success: function(data) {
 			  $("#textOutput").html(data)
 		  },
-		});
+	});
 }
+
+

@@ -8,3 +8,6 @@ python3 tiny_coin.py [port]
 
 
 ports range from 80-89.
+
+
+![image](https://raw.githubusercontent.com/Erickrus/tiny-coin/master/snapshot.png)
